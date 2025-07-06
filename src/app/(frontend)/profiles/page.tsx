@@ -69,24 +69,20 @@ async function getCategories(): Promise<Category[]> {
 
 export default async function ProfilesPage({ searchParams }: ProfilesPageProps) {
   const { search, category } = await searchParams
-  const [profiles, categories] = await Promise.all([
-    getProfiles(search, category),
-    getCategories(),
-  ])
+  const [profiles, categories] = await Promise.all([getProfiles(search, category), getCategories()])
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Freelancer Profiles</h1>
-      
+
       <SearchFilterForm categories={categories} />
-      
+
       {profiles.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-600 text-lg">
-            {search || category 
-              ? "No profiles found matching your criteria." 
-              : "No profiles found."
-            }
+            {search || category
+              ? 'No profiles found matching your criteria.'
+              : 'No profiles found.'}
           </p>
           {(search || category) && (
             <p className="text-gray-500 mt-2">
