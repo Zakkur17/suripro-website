@@ -1,7 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import React from 'react'
 import { Profile, Media, Category } from '@/payload-types'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import {
   Carousel,
@@ -21,91 +24,86 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   const portfolioImages = profile.portfolioImages as Media[]
 
   return (
-    <Link href={`/profiles/${profile.id}`} className="block transition-transform hover:scale-105">
-      <Card className="h-full hover:shadow-lg transition-shadow">
-        {/* Portfolio Images Carousel */}
-        <div className="relative">
+    <Card className="h-full flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+      <Carousel
+        className="w-full"
+        opts={{
+          loop: true, // Maakt de carousel eindeloos
+        }}
+      >
+        <CarouselContent className="-ml-0">
+          {' '}
+          {/* DE FIX: -ml-0 om de negatieve marge te verwijderen */}
           {portfolioImages && portfolioImages.length > 0 ? (
-            <Carousel className="w-full">
-              <CarouselContent>
-                {portfolioImages.map((image, index) => (
-                  <CarouselItem key={image.id}>
-                    <div className="relative h-48 w-full">
-                      {image.url && (
-                        <Image
-                          src={image.url}
-                          alt={image.alt || `Portfolio image ${index + 1}`}
-                          fill
-                          className="object-cover rounded-t-lg"
-                        />
-                      )}
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-2" />
-              <CarouselNext className="right-2" />
-            </Carousel>
+            portfolioImages.map((image) => (
+              <CarouselItem key={image.id} className="pl-0">
+                {' '}
+                {/* DE FIX: pl-0 om de padding te verwijderen */}
+                <Link href={`/profiles/${profile.id}`} className="block h-48 w-full relative">
+                  {image.url && (
+                    <Image
+                      src={image.url}
+                      alt={image.alt || `Portfolio image for ${profile.displayName}`}
+                      fill
+                      className="object-cover" // Zorgt dat de afbeelding de ruimte vult
+                    />
+                  )}
+                </Link>
+              </CarouselItem>
+            ))
           ) : (
-            <div className="h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-              <svg
-                className="w-16 h-16 text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
+            // Fallback als er geen portfolio images zijn
+            <CarouselItem className="pl-0">
+              <Link href={`/profiles/${profile.id}`} className="block h-48 w-full relative">
+                <div className="h-full bg-muted flex items-center justify-center">
+                  <svg
+                    className="w-16 h-16 text-muted-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </Link>
+            </CarouselItem>
           )}
+        </CarouselContent>
+        {/* De knoppen zijn nu kinderen van de Carousel en werken correct */}
+        <CarouselPrevious className="left-2" />
+        <CarouselNext className="right-2" />
+      </Carousel>
+
+      {/* Informatie onder de carousel */}
+      <div className="p-4 flex-grow flex flex-col">
+        <div className="flex items-center gap-3 mb-2">
+          {profilePicture?.url && (
+            <Image
+              src={profilePicture.url}
+              alt={profilePicture.alt || `${profile.displayName}'s profile picture`}
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+            />
+          )}
+          <CardTitle className="text-lg">{profile.displayName}</CardTitle>
         </div>
 
-        <CardHeader className="text-center">
-          {/* Profile Picture and Name */}
-          <div className="flex items-center justify-center gap-3 mb-2">
-            {profilePicture && typeof profilePicture === 'object' && profilePicture.url ? (
-              <Image
-                src={profilePicture.url}
-                alt={profilePicture.alt || `${profile.displayName}'s profile picture`}
-                width={40}
-                height={40}
-                className="rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            )}
-            <CardTitle className="text-lg">{profile.displayName}</CardTitle>
+        {category?.name && (
+          <div className="mb-3">
+            <Badge variant="secondary">{category.name}</Badge>
           </div>
+        )}
 
-          {category && typeof category === 'object' && category.name && (
-            <div className="mb-2">
-              <Badge variant="secondary">{category.name}</Badge>
-            </div>
-          )}
-        </CardHeader>
-        <CardContent>
-          <CardDescription className="line-clamp-3 text-center">
-            {profile.bio || 'No bio available'}
-          </CardDescription>
-        </CardContent>
-      </Card>
-    </Link>
+        <CardDescription className="line-clamp-3 text-sm flex-grow">
+          {profile.bio || 'No bio available.'}
+        </CardDescription>
+      </div>
+    </Card>
   )
 }

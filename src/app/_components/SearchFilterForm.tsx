@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useActionState } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useFormState } from 'react-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -27,7 +26,7 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
   const pathname = usePathname()
   const formRef = useRef<HTMLFormElement>(null)
 
-  const [_state, formAction] = useFormState(searchProfiles, null)
+  const [_state, formAction] = useActionState(searchProfiles, null)
 
   // Get current values from URL for default values
   const currentSearch = searchParams.get('search') || ''
