@@ -2,8 +2,8 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 
-export const Users: CollectionConfig = {
-  slug: 'users',
+export const Profiles: CollectionConfig = {
+  slug: 'profiles',
   access: {
     admin: authenticated,
     create: authenticated,
@@ -12,21 +12,26 @@ export const Users: CollectionConfig = {
     update: authenticated,
   },
   admin: {
-    defaultColumns: ['name', 'email'],
-    useAsTitle: 'name',
+    defaultColumns: ['displayName', 'user'],
+    useAsTitle: 'displayName',
   },
-  auth: true,
   fields: [
     {
-      name: 'name',
+      name: 'displayName',
       type: 'text',
+      required: true,
     },
     {
-      name: 'role',
-      type: 'select',
-      options: ['admin', 'freelancer'],
+      name: 'bio',
+      type: 'textarea',
+      required: false,
+    },
+    {
+      name: 'user',
+      type: 'relationship',
+      relationTo: 'users',
       required: true,
-      defaultValue: 'freelancer',
+      unique: true,
       admin: {
         position: 'sidebar',
       },
