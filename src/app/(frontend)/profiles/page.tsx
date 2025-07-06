@@ -77,26 +77,29 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
 
       <SearchFilterForm categories={categories} />
 
-      {profiles.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">
-            {search || category
-              ? 'No profiles found matching your criteria.'
-              : 'No profiles found.'}
-          </p>
-          {(search || category) && (
-            <p className="text-gray-500 mt-2">
-              Try adjusting your search terms or removing filters.
+      {/* Key-based wrapper to force remount when searchParams change */}
+      <div key={JSON.stringify({ search, category })}>
+        {profiles.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">
+              {search || category
+                ? 'No profiles found matching your criteria.'
+                : 'No profiles found.'}
             </p>
-          )}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {profiles.map((profile) => (
-            <ProfileCard key={profile.id} profile={profile} />
-          ))}
-        </div>
-      )}
+            {(search || category) && (
+              <p className="text-gray-500 mt-2">
+                Try adjusting your search terms or removing filters.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {profiles.map((profile) => (
+              <ProfileCard key={profile.id} profile={profile} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useFormState } from 'react-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -14,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
 import { Category } from '@/payload-types'
+import { searchProfiles } from '@/app/actions'
 
 interface SearchFilterFormProps {
   categories: Category[]
@@ -22,66 +24,41 @@ interface SearchFilterFormProps {
 export function SearchFilterForm({ categories }: SearchFilterFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const formRef = useRef<HTMLFormElement>(null)
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [_state, formAction] = useFormState(searchProfiles, null)
 
-  // Initialize form values from URL params
+  // Get current values from URL for default values
+  const currentSearch = searchParams.get('search') || ''
+  const currentCategory = searchParams.get('category') || 'all'
+
+  // Handle category change by triggering form submission
   useEffect(() => {
-    const search = searchParams.get('search') || ''
-    const category = searchParams.get('category') || ''
+    const form = formRef.current
+    if (!form) return
 
-    setSearchTerm(search)
-    setSelectedCategory(category)
-  }, [searchParams])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    updateURL()
-  }
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value)
-
-    const params = new URLSearchParams(searchParams)
-    if (value === 'all') {
-      params.delete('category')
-    } else {
-      params.set('category', value)
+    const handleCategoryChange = (e: Event) => {
+      const target = e.target as HTMLSelectElement
+      if (target.name === 'category') {
+        form.requestSubmit()
+      }
     }
 
-    const newPath = params.toString() ? `/profiles?${params.toString()}` : '/profiles'
-    router.push(newPath)
-  }
-
-  const updateURL = () => {
-    const params = new URLSearchParams()
-
-    if (searchTerm.trim()) {
-      params.set('search', searchTerm.trim())
+    form.addEventListener('change', handleCategoryChange)
+    return () => {
+      form.removeEventListener('change', handleCategoryChange)
     }
-
-    if (selectedCategory && selectedCategory !== 'all') {
-      params.set('category', selectedCategory)
-    }
-
-    const queryString = params.toString()
-    const newURL = queryString ? `/profiles?${queryString}` : '/profiles'
-
-    router.push(newURL)
-  }
+  }, [])
 
   const clearFilters = () => {
-    setSearchTerm('')
-    setSelectedCategory('all')
     router.push('/profiles')
   }
 
-  const hasActiveFilters = searchTerm.trim() || selectedCategory
+  const hasActiveFilters = currentSearch.trim() || (currentCategory && currentCategory !== 'all')
 
   return (
     <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-700 mb-8">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form ref={formRef} action={formAction} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Search Input */}
           <div className="space-y-2">
@@ -90,10 +67,10 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 id="search"
+                name="search"
                 type="text"
                 placeholder="Search by name or bio..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                defaultValue={currentSearch}
                 className="pl-10"
               />
             </div>
@@ -102,7 +79,7 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
           {/* Category Filter */}
           <div className="space-y-2">
             <Label htmlFor="category">Filter by Category</Label>
-            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+            <Select name="category" defaultValue={currentCategory}>
               <SelectTrigger>
                 <SelectValue placeholder="All categories" />
               </SelectTrigger>
@@ -141,18 +118,18 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
-        <div className="mt-4 pt-4 border-t">
-          <p className="text-sm text-gray-600 mb-2">Active filters:</p>
+        <div className="mt-4 pt-4 border-t border-gray-700">
+          <p className="text-sm text-gray-400 mb-2">Active filters:</p>
           <div className="flex flex-wrap gap-2">
-            {searchTerm.trim() && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                Search: &quot;{searchTerm}&quot;
+            {currentSearch.trim() && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-900/50 text-blue-300 rounded-full text-xs">
+                Search: &quot;{currentSearch}&quot;
               </span>
             )}
-            {selectedCategory && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+            {currentCategory && currentCategory !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-900/50 text-green-300 rounded-full text-xs">
                 Category:{' '}
-                {categories.find((c) => c.id.toString() === selectedCategory)?.name || 'Unknown'}
+                {categories.find((c) => c.id.toString() === currentCategory)?.name || 'Unknown'}
               </span>
             )}
           </div>

@@ -86,13 +86,13 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
           <CardContent>
             {/* Contact Information */}
             {(profile.contactInfo?.email || profile.contactInfo?.phone) && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3">Contact Information</h3>
+              <div className="mb-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
+                <h3 className="text-lg font-semibold mb-3 text-foreground">Contact Information</h3>
                 <div className="space-y-2">
                   {profile.contactInfo.email && (
                     <div className="flex items-center">
                       <svg
-                        className="w-5 h-5 text-gray-500 mr-2"
+                        className="w-5 h-5 text-gray-400 mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -101,7 +101,7 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                       </svg>
                       <a
                         href={`mailto:${profile.contactInfo.email}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-400 hover:underline"
                       >
                         {profile.contactInfo.email}
                       </a>
@@ -110,7 +110,7 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                   {profile.contactInfo.phone && (
                     <div className="flex items-center">
                       <svg
-                        className="w-5 h-5 text-gray-500 mr-2"
+                        className="w-5 h-5 text-gray-400 mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -118,7 +118,7 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                       </svg>
                       <a
                         href={`tel:${profile.contactInfo.phone}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-400 hover:underline"
                       >
                         {profile.contactInfo.phone}
                       </a>
@@ -131,11 +131,11 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
             {/* Bio */}
             <div className="prose max-w-none">
               {profile.bio ? (
-                <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                <div className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
                   {profile.bio}
                 </div>
               ) : (
-                <p className="text-gray-500 italic">No bio available</p>
+                <p className="text-muted-foreground italic">No bio available</p>
               )}
             </div>
           </CardContent>
