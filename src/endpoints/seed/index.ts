@@ -349,6 +349,7 @@ export const seed = async ({
       displayName: 'Demo Author',
       bio: 'I am a passionate full-stack developer with over 5 years of experience in building web applications. I specialize in React, Node.js, and modern JavaScript technologies. I love creating efficient, scalable solutions that solve real-world problems.',
       user: demoAuthor.id,
+      profilePicture: image1Doc.id,
     },
   })
 

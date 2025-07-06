@@ -744,6 +744,7 @@ export interface Form {
 export interface Profile {
   id: number;
   displayName: string;
+  profilePicture?: (number | null) | Media;
   bio?: string | null;
   user: number | User;
   updatedAt: string;
@@ -1317,6 +1318,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface ProfilesSelect<T extends boolean = true> {
   displayName?: T;
+  profilePicture?: T;
   bio?: T;
   user?: T;
   updatedAt?: T;

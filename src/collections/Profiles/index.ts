@@ -23,6 +23,12 @@ export const Profiles: CollectionConfig = {
       required: true,
     },
     {
+      name: 'profilePicture',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+    },
+    {
       name: 'bio',
       type: 'textarea',
       required: false,
