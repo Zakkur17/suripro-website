@@ -52,6 +52,35 @@ export const Profiles: CollectionConfig = {
       required: false,
     },
     {
+      name: 'services',
+      label: 'Service Packages',
+      type: 'array',
+      minRows: 1,
+      fields: [
+        {
+          name: 'serviceName',
+          type: 'text',
+          required: true,
+          label: 'Service Name (e.g., Basic Logo Design)',
+        },
+        {
+          name: 'serviceDescription',
+          type: 'textarea',
+          required: true,
+          label: 'What is included in this service?',
+        },
+        {
+          name: 'price',
+          type: 'number',
+          required: true,
+          label: 'Price (in USD)',
+          admin: {
+            description: 'Enter the price for this service package.',
+          },
+        },
+      ],
+    },
+    {
       name: 'contactInfo',
       type: 'group',
       fields: [

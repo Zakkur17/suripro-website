@@ -189,6 +189,32 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                 <p className="text-muted-foreground italic">No bio available</p>
               )}
             </div>
+
+            {/* Services Offered */}
+            {profile.services && profile.services.length > 0 && (
+              <div className="mt-8">
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Services Offered</h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {profile.services.map((service, index) => (
+                    <Card key={index} className="border border-gray-200">
+                      <CardContent className="p-6">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="text-lg font-semibold text-foreground">
+                            {service.serviceName}
+                          </h4>
+                          <span className="text-2xl font-bold text-green-600">
+                            ${service.price}
+                          </span>
+                        </div>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {service.serviceDescription}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

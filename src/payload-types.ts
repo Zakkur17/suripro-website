@@ -749,6 +749,17 @@ export interface Profile {
   portfolioImages?: (number | Media)[] | null;
   category: number | Category;
   bio?: string | null;
+  services?:
+    | {
+        serviceName: string;
+        serviceDescription: string;
+        /**
+         * Enter the price for this service package.
+         */
+        price: number;
+        id?: string | null;
+      }[]
+    | null;
   contactInfo?: {
     email?: string | null;
     phone?: string | null;
@@ -1327,6 +1338,14 @@ export interface ProfilesSelect<T extends boolean = true> {
   portfolioImages?: T;
   category?: T;
   bio?: T;
+  services?:
+    | T
+    | {
+        serviceName?: T;
+        serviceDescription?: T;
+        price?: T;
+        id?: T;
+      };
   contactInfo?:
     | T
     | {
