@@ -19,17 +19,18 @@ export const PostHero: React.FC<{
       <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
         <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
           <div className="uppercase text-sm mb-6">
+            {' '}
             {categories?.map((category, index) => {
               if (typeof category === 'object' && category !== null) {
-                const { title: categoryTitle } = category
+                const { name: categoryName } = category
 
-                const titleToUse = categoryTitle || 'Untitled category'
+                const nameToUse = categoryName || 'Untitled category'
 
                 const isLast = index === categories.length - 1
 
                 return (
                   <React.Fragment key={index}>
-                    {titleToUse}
+                    {nameToUse}
                     {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
                   </React.Fragment>
                 )

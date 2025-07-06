@@ -129,7 +129,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Technology',
+        name: 'Technology',
         breadcrumbs: [
           {
             label: 'Technology',
@@ -142,7 +142,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'News',
+        name: 'News',
         breadcrumbs: [
           {
             label: 'News',
@@ -155,7 +155,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Finance',
+        name: 'Finance',
         breadcrumbs: [
           {
             label: 'Finance',
@@ -167,7 +167,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Design',
+        name: 'Design',
         breadcrumbs: [
           {
             label: 'Design',
@@ -180,7 +180,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Software',
+        name: 'Software',
         breadcrumbs: [
           {
             label: 'Software',
@@ -193,7 +193,7 @@ export const seed = async ({
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Engineering',
+        name: 'Engineering',
         breadcrumbs: [
           {
             label: 'Engineering',
@@ -340,6 +340,30 @@ export const seed = async ({
     }),
   ])
 
+  payload.logger.info(`— Seeding categories...`)
+
+  // Create demo categories
+  const [itCategory, _bouwCategory, _tuinCategory] = await Promise.all([
+    payload.create({
+      collection: 'categories',
+      data: {
+        name: 'IT',
+      },
+    }),
+    payload.create({
+      collection: 'categories',
+      data: {
+        name: 'Bouw',
+      },
+    }),
+    payload.create({
+      collection: 'categories',
+      data: {
+        name: 'Tuinonderhoud',
+      },
+    }),
+  ])
+
   payload.logger.info(`— Seeding profiles...`)
 
   // Create demo profiles
@@ -350,6 +374,11 @@ export const seed = async ({
       bio: 'I am a passionate full-stack developer with over 5 years of experience in building web applications. I specialize in React, Node.js, and modern JavaScript technologies. I love creating efficient, scalable solutions that solve real-world problems.',
       user: demoAuthor.id,
       profilePicture: image1Doc.id,
+      category: itCategory.id,
+      contactInfo: {
+        email: 'demo-author@example.com',
+        phone: '+31 6 12345678',
+      },
     },
   })
 

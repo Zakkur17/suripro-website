@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Profile, Media } from '@/payload-types'
+import { Profile, Media, Category } from '@/payload-types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface ProfileCardProps {
   profile: Profile
@@ -9,6 +10,7 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile }: ProfileCardProps) {
   const profilePicture = profile.profilePicture as Media
+  const category = profile.category as Category
 
   return (
     <Link href={`/profiles/${profile.id}`} className="block transition-transform hover:scale-105">
@@ -40,6 +42,11 @@ export function ProfileCard({ profile }: ProfileCardProps) {
               </div>
             )}
           </div>
+          {category && typeof category === 'object' && category.name && (
+            <div className="mb-2">
+              <Badge variant="secondary">{category.name}</Badge>
+            </div>
+          )}
           <CardTitle className="text-xl">{profile.displayName}</CardTitle>
         </CardHeader>
         <CardContent>

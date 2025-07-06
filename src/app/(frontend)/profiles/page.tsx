@@ -14,7 +14,7 @@ async function getProfiles(): Promise<Profile[]> {
   const allProfiles = await payload.find({
     collection: 'profiles',
     limit: 100, // Fetch up to 100 profiles
-    depth: 1, // Include user relationship data
+    depth: 2, // Include category and user relationship data
   })
 
   return allProfiles.docs

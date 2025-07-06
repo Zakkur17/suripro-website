@@ -354,9 +354,7 @@ export interface Media {
  */
 export interface Category {
   id: number;
-  title: string;
-  slug?: string | null;
-  slugLock?: boolean | null;
+  name: string;
   parent?: (number | null) | Category;
   breadcrumbs?:
     | {
@@ -745,7 +743,12 @@ export interface Profile {
   id: number;
   displayName: string;
   profilePicture?: (number | null) | Media;
+  category: number | Category;
   bio?: string | null;
+  contactInfo?: {
+    email?: string | null;
+    phone?: string | null;
+  };
   user: number | User;
   updatedAt: string;
   createdAt: string;
@@ -1273,9 +1276,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  slugLock?: T;
+  name?: T;
   parent?: T;
   breadcrumbs?:
     | T
@@ -1319,7 +1320,14 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProfilesSelect<T extends boolean = true> {
   displayName?: T;
   profilePicture?: T;
+  category?: T;
   bio?: T;
+  contactInfo?:
+    | T
+    | {
+        email?: T;
+        phone?: T;
+      };
   user?: T;
   updatedAt?: T;
   createdAt?: T;

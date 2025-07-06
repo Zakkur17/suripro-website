@@ -13,8 +13,9 @@ export const Profiles: CollectionConfig = {
     update: authenticated,
   },
   admin: {
-    defaultColumns: ['displayName', 'user'],
+    defaultColumns: ['displayName', 'category', 'user'],
     useAsTitle: 'displayName',
+    listSearchableFields: ['displayName', 'bio'],
   },
   fields: [
     {
@@ -29,9 +30,29 @@ export const Profiles: CollectionConfig = {
       required: false,
     },
     {
+      name: 'category',
+      type: 'relationship',
+      relationTo: 'categories',
+      required: true,
+    },
+    {
       name: 'bio',
       type: 'textarea',
       required: false,
+    },
+    {
+      name: 'contactInfo',
+      type: 'group',
+      fields: [
+        {
+          name: 'email',
+          type: 'email',
+        },
+        {
+          name: 'phone',
+          type: 'text',
+        },
+      ],
     },
     {
       name: 'user',
