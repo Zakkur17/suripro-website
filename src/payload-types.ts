@@ -743,6 +743,10 @@ export interface Profile {
   id: number;
   displayName: string;
   profilePicture?: (number | null) | Media;
+  /**
+   * Upload images to showcase your work. The first image will be the primary one.
+   */
+  portfolioImages?: (number | Media)[] | null;
   category: number | Category;
   bio?: string | null;
   contactInfo?: {
@@ -1320,6 +1324,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProfilesSelect<T extends boolean = true> {
   displayName?: T;
   profilePicture?: T;
+  portfolioImages?: T;
   category?: T;
   bio?: T;
   contactInfo?:

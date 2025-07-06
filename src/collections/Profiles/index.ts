@@ -30,6 +30,17 @@ export const Profiles: CollectionConfig = {
       required: false,
     },
     {
+      name: 'portfolioImages',
+      label: 'Portfolio Images',
+      type: 'upload',
+      relationTo: 'media',
+      hasMany: true,
+      admin: {
+        description:
+          'Upload images to showcase your work. The first image will be the primary one.',
+      },
+    },
+    {
       name: 'category',
       type: 'relationship',
       relationTo: 'categories',

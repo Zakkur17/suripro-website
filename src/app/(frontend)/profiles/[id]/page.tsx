@@ -7,6 +7,13 @@ import React from 'react'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 
 export const dynamic = 'force-dynamic'
 
@@ -42,25 +49,68 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
 
   const profilePicture = profile.profilePicture as Media
   const category = profile.category as Category
+  const portfolioImages = profile.portfolioImages as Media[]
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-4xl mx-auto">
+          {/* Portfolio Images Carousel */}
+          <div className="relative mb-6">
+            {portfolioImages && portfolioImages.length > 0 ? (
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {portfolioImages.map((image, index) => (
+                    <CarouselItem key={image.id}>
+                      <div className="relative h-96 w-full">
+                        {image.url && (
+                          <Image
+                            src={image.url}
+                            alt={image.alt || `Portfolio image ${index + 1}`}
+                            fill
+                            className="object-cover rounded-t-lg"
+                          />
+                        )}
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
+            ) : (
+              <div className="h-96 bg-gray-200 rounded-t-lg flex items-center justify-center">
+                <svg
+                  className="w-24 h-24 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
+          </div>
+
           <CardHeader className="text-center">
-            <div className="flex justify-center mb-6">
+            {/* Profile Picture and Name */}
+            <div className="flex items-center justify-center gap-4 mb-6">
               {profilePicture && typeof profilePicture === 'object' && profilePicture.url ? (
                 <Image
                   src={profilePicture.url}
                   alt={profilePicture.alt || `${profile.displayName}'s profile picture`}
-                  width={150}
-                  height={150}
+                  width={80}
+                  height={80}
                   className="rounded-full object-cover"
                 />
               ) : (
-                <div className="w-36 h-36 bg-gray-200 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
                   <svg
-                    className="w-16 h-16 text-gray-400"
+                    className="w-10 h-10 text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +123,9 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                   </svg>
                 </div>
               )}
+              <CardTitle className="text-3xl">{profile.displayName}</CardTitle>
             </div>
+
             {category && typeof category === 'object' && category.name && (
               <div className="mb-4">
                 <Badge variant="default" className="text-lg px-4 py-2">
@@ -81,7 +133,6 @@ export default async function ProfileDetailPage({ params }: ProfileDetailPagePro
                 </Badge>
               </div>
             )}
-            <CardTitle className="text-3xl">{profile.displayName}</CardTitle>
           </CardHeader>
           <CardContent>
             {/* Contact Information */}
