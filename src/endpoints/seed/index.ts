@@ -102,6 +102,7 @@ export const seed = async ({
         name: 'Demo Author',
         email: 'demo-author@example.com',
         password: 'password',
+        role: 'freelancer',
       },
     }),
     payload.create({
@@ -338,6 +339,18 @@ export const seed = async ({
       },
     }),
   ])
+
+  payload.logger.info(`— Seeding profiles...`)
+
+  // Create demo profiles
+  await payload.create({
+    collection: 'profiles',
+    data: {
+      displayName: 'Demo Author',
+      bio: 'I am a passionate full-stack developer with over 5 years of experience in building web applications. I specialize in React, Node.js, and modern JavaScript technologies. I love creating efficient, scalable solutions that solve real-world problems.',
+      user: demoAuthor.id,
+    },
+  })
 
   payload.logger.info('Seeded database successfully!')
 }
