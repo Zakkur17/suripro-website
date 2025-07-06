@@ -12,13 +12,13 @@ export const dynamic = 'force-dynamic'
 
 async function getFeaturedProfiles(): Promise<Profile[]> {
   const payload = await getPayload({ config: configPromise })
-  
+
   const allProfilesResult = await payload.find({
     collection: 'profiles',
     limit: 100,
     depth: 2, // To populate profilePicture and category
   })
-  
+
   // Shuffle the profiles and return first 4
   const shuffled = allProfilesResult.docs.sort(() => 0.5 - Math.random())
   return shuffled.slice(0, 4)
@@ -26,21 +26,18 @@ async function getFeaturedProfiles(): Promise<Profile[]> {
 
 async function getCategories(): Promise<Category[]> {
   const payload = await getPayload({ config: configPromise })
-  
+
   const categories = await payload.find({
     collection: 'categories',
     limit: 100,
     sort: 'name',
   })
-  
+
   return categories.docs
 }
 
 export default async function HomePage() {
-  const [featuredProfiles, categories] = await Promise.all([
-    getFeaturedProfiles(),
-    getCategories(),
-  ])
+  const [featuredProfiles, categories] = await Promise.all([getFeaturedProfiles(), getCategories()])
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -53,7 +50,7 @@ export default async function HomePage() {
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
             Find the perfect professional for your project, right here in Suriname.
           </p>
-          
+
           {/* Search Form as Hero CTA */}
           <div className="max-w-4xl mx-auto">
             <SearchFilterForm categories={categories} />
@@ -67,7 +64,7 @@ export default async function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Explore millions of pros
           </h2>
-          
+
           {categories.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((category) => (
@@ -88,7 +85,7 @@ export default async function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             Real results from clients
           </h2>
-          
+
           {featuredProfiles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProfiles.map((profile) => (
@@ -134,5 +131,6 @@ export default async function HomePage() {
 
 export const metadata: Metadata = {
   title: 'SuriPro - Find Professional Freelancers in Suriname',
-  description: 'Connect with talented freelancers in Suriname. Find the perfect professional for your project from our curated marketplace of skilled professionals.',
+  description:
+    'Connect with talented freelancers in Suriname. Find the perfect professional for your project from our curated marketplace of skilled professionals.',
 }
