@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useRef } from 'react'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useFormState } from 'react-dom'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,6 +24,7 @@ interface SearchFilterFormProps {
 export function SearchFilterForm({ categories }: SearchFilterFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const formRef = useRef<HTMLFormElement>(null)
 
   const [_state, formAction] = useFormState(searchProfiles, null)
@@ -32,29 +33,22 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
   const currentSearch = searchParams.get('search') || ''
   const currentCategory = searchParams.get('category') || 'all'
 
-  // Handle category change by triggering form submission
-  useEffect(() => {
-    const form = formRef.current
-    if (!form) return
-
-    const handleCategoryChange = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      if (target.name === 'category') {
-        form.requestSubmit()
-      }
-    }
-
-    form.addEventListener('change', handleCategoryChange)
-    return () => {
-      form.removeEventListener('change', handleCategoryChange)
-    }
-  }, [])
+  // State for controlling the inputs
+  const [searchInput, setSearchInput] = useState(currentSearch)
+  const [categoryInput, setCategoryInput] = useState(currentCategory)
 
   const clearFilters = () => {
-    router.push('/profiles')
+    setSearchInput('')
+    setCategoryInput('all')
+
+    // Only navigate to /profiles if we're already on the profiles page
+    // If we're on the homepage, just reset the form without navigation
+    if (pathname === '/profiles') {
+      router.push('/profiles')
+    }
   }
 
-  const hasActiveFilters = currentSearch.trim() || (currentCategory && currentCategory !== 'all')
+  const hasActiveFilters = searchInput.trim() !== '' || (categoryInput && categoryInput !== 'all')
 
   return (
     <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-700 mb-8">
@@ -70,7 +64,8 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
                 name="search"
                 type="text"
                 placeholder="Search by name or bio..."
-                defaultValue={currentSearch}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -79,9 +74,18 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
           {/* Category Filter */}
           <div className="space-y-2">
             <Label htmlFor="category">Filter by Category</Label>
-            <Select name="category" defaultValue={currentCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="All categories" />
+            <Select
+              name="category"
+              value={categoryInput}
+              onValueChange={(value) => setCategoryInput(value)}
+            >
+              <SelectTrigger className="text-foreground border-input bg-background">
+                <SelectValue className="text-foreground">
+                  {categoryInput === 'all'
+                    ? 'All categories'
+                    : categories.find((c) => c.id.toString() === categoryInput)?.name ||
+                      'All categories'}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All categories</SelectItem>
@@ -107,7 +111,7 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
               type="button"
               variant="outline"
               onClick={clearFilters}
-              className="flex-1 md:flex-none"
+              className="flex-1 md:flex-none text-foreground"
             >
               <X className="h-4 w-4 mr-2" />
               Clear Filters
@@ -121,15 +125,15 @@ export function SearchFilterForm({ categories }: SearchFilterFormProps) {
         <div className="mt-4 pt-4 border-t border-gray-700">
           <p className="text-sm text-gray-400 mb-2">Active filters:</p>
           <div className="flex flex-wrap gap-2">
-            {currentSearch.trim() && (
+            {searchInput.trim() && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-900/50 text-blue-300 rounded-full text-xs">
-                Search: &quot;{currentSearch}&quot;
+                Search: &quot;{searchInput}&quot;
               </span>
             )}
-            {currentCategory && currentCategory !== 'all' && (
+            {categoryInput && categoryInput !== 'all' && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-900/50 text-green-300 rounded-full text-xs">
                 Category:{' '}
-                {categories.find((c) => c.id.toString() === currentCategory)?.name || 'Unknown'}
+                {categories.find((c) => c.id.toString() === categoryInput)?.name || 'Unknown'}
               </span>
             )}
           </div>
