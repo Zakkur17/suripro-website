@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Search, X } from 'lucide-react'
 import { Category } from '@/payload-types'
-import { searchProfiles } from '@/app/actions'
+import { searchProfiles } from '../(frontend)/dashboard/my-profile/actions'
 
 interface SearchFilterFormProps {
   categories: Category[]

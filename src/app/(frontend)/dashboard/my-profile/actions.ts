@@ -1,11 +1,32 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '../../../../payload.config'
 import { requireFreelancer } from '../../../../lib/auth'
 
-export async function updateProfileAction(formData: FormData) {
+export async function searchProfiles(prevState: unknown, formData: FormData) {
+  const search = formData.get('search') as string
+  const category = formData.get('category') as string
+
+  const params = new URLSearchParams()
+
+  if (search && search.trim()) {
+    params.set('search', search.trim())
+  }
+
+  if (category && category !== 'all') {
+    params.set('category', category)
+  }
+
+  const queryString = params.toString()
+  const newUrl = queryString ? `/profiles?${queryString}` : '/profiles'
+
+  redirect(newUrl)
+}
+
+export async function updateProfile(prevState: unknown, formData: FormData) {
   try {
     // Verify the user is authenticated and is a freelancer
     const user = await requireFreelancer()
@@ -16,7 +37,7 @@ export async function updateProfileAction(formData: FormData) {
     const profileId = formData.get('profileId') as string
 
     if (!profileId) {
-      return { success: false, error: 'Profile ID is required' }
+      return { success: false, message: 'Profile ID is required' }
     }
 
     // Security check: Verify the user owns this profile
@@ -33,7 +54,7 @@ export async function updateProfileAction(formData: FormData) {
         : existingProfile.user.toString()
 
     if (!existingProfile || profileUserId !== user.id) {
-      return { success: false, error: 'Unauthorized: You can only edit your own profile' }
+      return { success: false, message: 'Unauthorized: You can only edit your own profile' }
     }
 
     // Extract form data
@@ -46,12 +67,12 @@ export async function updateProfileAction(formData: FormData) {
     // Handle services array - this will be a more complex implementation
     const services = []
     let serviceIndex = 0
-    while (formData.get(`services[${serviceIndex}].serviceName`)) {
-      const serviceName = formData.get(`services[${serviceIndex}].serviceName`) as string
+    while (formData.get(`services.${serviceIndex}.serviceName`)) {
+      const serviceName = formData.get(`services.${serviceIndex}.serviceName`) as string
       const serviceDescription = formData.get(
-        `services[${serviceIndex}].serviceDescription`,
+        `services.${serviceIndex}.serviceDescription`,
       ) as string
-      const price = parseFloat(formData.get(`services[${serviceIndex}].price`) as string)
+      const price = parseFloat(formData.get(`services.${serviceIndex}.price`) as string)
 
       if (serviceName && serviceDescription && !isNaN(price)) {
         services.push({
@@ -83,6 +104,6 @@ export async function updateProfileAction(formData: FormData) {
     return { success: true, message: 'Profile updated successfully!' }
   } catch (error) {
     console.error('Error updating profile:', error)
-    return { success: false, error: 'Failed to update profile' }
+    return { success: false, message: 'Failed to update profile' }
   }
 }

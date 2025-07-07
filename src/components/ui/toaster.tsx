@@ -1,4 +1,4 @@
-'uimport { useToast } from "../../hooks/use-toast"e client'
+'use client'
 
 import { useToast } from '@/hooks/use-toast'
 import {
