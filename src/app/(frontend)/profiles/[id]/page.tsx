@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 import { getPayload } from 'payload'
-import configPromise from '@payload-config'
+import configPromise from '../../../../payload.config'
 import { Profile, Media, Category } from '@/payload-types'
 import { notFound } from 'next/navigation'
 import React from 'react'
